@@ -17,4 +17,4 @@ ADD state/ /state/
 COPY --from=fetch /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 COPY --from=fetch tailscale tailscaled /
 
-CMD ["/tailscaled", "-statedir", "/state", "-tun", "userspace-networking", "-socket", "/tailscaled.sock", "-verbose", "10"]
+CMD ["/tailscaled", "-statedir", "/state", "-tun", "userspace-networking", "-socket", "/tailscaled.sock"]
