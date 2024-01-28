@@ -1,6 +1,7 @@
 # Podscale - simple container to add a Podman pod to Tailscale
 
 **Note:** there is an [official Tailscale docker image](https://tailscale.com/kb/1282/docker) available.
+Since this uses binaries downloaded directly from Tailscale rather than building the opensource client directly I do not think these images should be pushed to a public registry without explicit permission from Tailscale.
 
 This containerfile builds an image which only contains the static binaries for the latest stable release of [Tailscale](https://tailscale.com/) and a CA-certs bundle needed for generating ACME certs for [`tailscale serve`](https://tailscale.com/kb/1312/serve). Tailscale ssh is not supported as there is no enviroment to access within the container.
 
@@ -12,6 +13,13 @@ By default the pod name will be the hostname for the pod on the Tailnet.
 
 ## Usage
 
+Build the container locally:
+```
+cd podscale
+podman build -t podscale .
+cd -
+```
+
 Start a pod containing your application:
 
 ```
@@ -22,7 +30,7 @@ podman run --pod=podscalepod docker.io/nginx
 Add the Podscale container:
 
 ```
-podman run --pod=podscalepod -it -volume podstate:/state/ -name podscale ghcr.io/gebrk/podscale
+podman run --pod=podscalepod -it -volume podstate:/state/ -name podscale localhost/podscale
 ```
 
 Use `podman exec` to use the tailscale client in the container to authenticate (or you could use [auth keys](https://tailscale.com/kb/1085/auth-keys)) and enable `serve` if wanted.
@@ -48,7 +56,7 @@ echo "<h1>Hello Tailnet</h1>" > content/index.html
 Run the podscale container standalone, not in a pod this time:
 
 ```
-podman run -it -volume podstate:/state/ -volume $(pwd)/content:/content/ -name podscale ghcr.io/gebrk/podscale
+podman run -it -volume podstate:/state/ -volume $(pwd)/content:/content/ -name podscale localhost/podscale
 ```
 
 If reusing the state volume from the previous example reset the serve proxy or with a fresh state volume, login.
